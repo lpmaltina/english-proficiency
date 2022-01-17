@@ -89,12 +89,13 @@ def extract_news(soup_article):
     article_content_list = []
 
     for el in article_content.find_all(text=True):
+        el = el.strip()
         if el.startswith("Difficult words:"):
             break
         article_content_list.append(el)
 
     date = article_content_list[0]
-    article_text = "".join(article_content_list[1:])
+    article_text = " ".join(article_content_list[1:])
     return date, article_text
 
 
