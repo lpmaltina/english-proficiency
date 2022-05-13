@@ -4,13 +4,14 @@ import sqlite3
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+import pandas as pd
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
 }
 
 
-class TextinlevelsDB:
+class TextsinlevelsDB:
     def __init__(self, db_name):
         self.conn = sqlite3.connect(f"{db_name}.db")
         self.cur = self.conn.cursor()
@@ -70,6 +71,9 @@ class TextinlevelsDB:
         self.create_table(table_name)
         self.fill_table(table_name, extract_function)
 
+    def write_from_table_to_df(self, table_name):
+        return pd.read_sql_query(f"SELECT * FROM {table_name}", self.conn)
+
     def __del__(self):
         self.conn.close()
 
@@ -85,12 +89,13 @@ def extract_news(soup_article):
     article_content_list = []
 
     for el in article_content.find_all(text=True):
+        el = el.strip()
         if el.startswith("Difficult words:"):
             break
         article_content_list.append(el)
 
     date = article_content_list[0]
-    article_text = "".join(article_content_list[1:])
+    article_text = " ".join(article_content_list[1:])
     return date, article_text
 
 
@@ -111,7 +116,7 @@ def extract_days(soup_article):
 
 
 if __name__ == "__main__":
-    textsinlevels = TextinlevelsDB(db_name="textsinlevels")
+    textsinlevels = TextsinlevelsDB(db_name="textsinlevels")
     textsinlevels.create_and_fill_table(
         table_name="daysinlevels", extract_function=extract_days
     )
