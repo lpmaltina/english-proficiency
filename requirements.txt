@@ -1,3 +1,8 @@
+scikit-learn
+streamlit
+joblib
+spacy
+wordfreq
 pandas
 tqdm
 beautifulsoup4
