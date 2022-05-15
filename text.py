@@ -10,6 +10,8 @@ class Text:
     def __init__(self, tokens):
         self.tokens = tokens
         self.lemmas = self.lemmatize()
+        if len(self.lemmas) < 5:
+            raise ValueError("The text must have at least 5 words")
         self.dependencies = self.get_dependencies()
 
     def lemmatize(self):
@@ -24,7 +26,7 @@ class Text:
 
     def count_sentences(self):
         n_sentences = 0
-        for sent in self.tokens.sents:
+        for _ in self.tokens.sents:
             n_sentences += 1
         return n_sentences
 
@@ -77,7 +79,9 @@ class Text:
     def count_mean_noun_chunk_len(self):
         noun_chunks = list(self.tokens.noun_chunks)
         len_noun_chunks = [len(noun_chunk) for noun_chunk in noun_chunks]
-        return sum(len_noun_chunks) / len(noun_chunks)
+        if len_noun_chunks:
+            sum(len_noun_chunks) / len(noun_chunks)
+        return 0
 
     def count_passiveness(self):
         active = 0
@@ -103,7 +107,9 @@ class Text:
                 for child in token.children:
                     if child.is_alpha:
                         num_dependencies += 1
-        return num_dependencies / len(self.dependencies)
+        if self.dependencies:
+            return num_dependencies / len(self.dependencies)
+        return 0
 
     def count_mean_arc_len(self):
         sum_arc_len = 0
@@ -114,7 +120,9 @@ class Text:
                     if child.is_alpha:
                         sum_arc_len += abs(token.i - child.i) - 1
                         n_arcs += 1
-        return sum_arc_len / n_arcs
+        if n_arcs:
+            return sum_arc_len / n_arcs
+        return 0
 
     def create_df(self, abstract_nouns, concrete_nouns, word2level):
         dct = {
