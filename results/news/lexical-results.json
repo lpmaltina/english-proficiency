@@ -1,0 +1,1 @@
+{"F1 macro (validation)": {"logistic_it": 0.8602}, "Best params": {"logistic_it": {"logistic_it__alpha": 1, "vectorizer__word__min_df": 5}}, "Accuracy (test)": {"logistic_it": 0.8753}, "F1 macro (test)": {"logistic_it": 0.8754}}
